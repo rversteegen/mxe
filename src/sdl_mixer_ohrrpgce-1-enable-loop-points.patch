@@ -1,0 +1,29 @@
+This file is part of MXE. See LICENSE.md for licensing information.
+
+Enable loop points in mikmod and libmodplug. Note that we don't actually use mikmod,
+so that part has no effect.
+
+Follows r5418: "Recompile SDL_mixer.dll with loop points enabled in mikmod."
+
+--- a/music_mod.c       Mon May 02 23:10:00 2011 +1200
++++ b/music_mod.c       Thu Oct 11 22:07:32 2012 +1300
+@@ -235,7 +235,7 @@
+ 	module->extspd  = 1;
+ 	module->panflag = 1;
+ 	module->wrap    = 0;
+-	module->loop    = 0;
++	module->loop    = 1;
+ #if 0 /* Don't set fade out by default - unfortunately there's no real way
+ to query the status of the song or set trigger actions.  Hum. */
+ 	module->fadeout = 1;
+--- a/music_modplug.c	Thu Jan 03 10:18:59 2013 -0500
++++ b/music_modplug.c	Wed Aug 02 20:17:45 2017 +1200
+@@ -58,7 +58,7 @@
+ 	settings.mBassRange=50;
+ 	settings.mSurroundDepth=0;
+ 	settings.mSurroundDelay=10;
+-	settings.mLoopCount=0;
++	settings.mLoopCount=-1;
+ 	ModPlug_SetSettings(&settings);
+ 	return 0;
+ }
