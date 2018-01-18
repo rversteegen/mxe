@@ -1,13 +1,15 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := qtgamepad
+$(PKG)_WEBSITE  := https://www.qt.io/
+$(PKG)_DESCR    := Qt
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION   = $(qtbase_VERSION)
-$(PKG)_CHECKSUM := 5898f7bc002d0ac65b698043f24f3e2ff2bb7ca7735f43b74e37056c2db5663c
+$(PKG)_CHECKSUM := 537550f988a71942392b3df21044e4cd566378bad2d9727663c9e8e7743e87e6
 $(PKG)_SUBDIR    = $(subst qtbase,qtgamepad,$(qtbase_SUBDIR))
 $(PKG)_FILE      = $(subst qtbase,qtgamepad,$(qtbase_FILE))
 $(PKG)_URL       = $(subst qtbase,qtgamepad,$(qtbase_URL))
-$(PKG)_DEPS     := gcc qtbase qtdeclarative
+$(PKG)_DEPS     := cc qtbase qtdeclarative
 
 define $(PKG)_UPDATE
     echo $(qtbase_VERSION)

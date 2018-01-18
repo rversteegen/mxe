@@ -1,13 +1,15 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := qtwebsockets
+$(PKG)_WEBSITE  := https://www.qt.io/
+$(PKG)_DESCR    := Qt
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION   = $(qtbase_VERSION)
-$(PKG)_CHECKSUM := 741be11a907f82807a786e6a53ae7316c0b3864491b692e8719c381e0f158b43
+$(PKG)_CHECKSUM := 17ab0fa22007e5485bf98cb5fef5387628274548d5e96923f45d097838f49403
 $(PKG)_SUBDIR    = $(subst qtbase,qtwebsockets,$(qtbase_SUBDIR))
 $(PKG)_FILE      = $(subst qtbase,qtwebsockets,$(qtbase_FILE))
 $(PKG)_URL       = $(subst qtbase,qtwebsockets,$(qtbase_URL))
-$(PKG)_DEPS     := gcc qtbase
+$(PKG)_DEPS     := cc qtbase
 
 define $(PKG)_UPDATE
     echo $(qtbase_VERSION)

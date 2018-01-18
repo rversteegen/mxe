@@ -8,7 +8,7 @@ $(PKG)_SUBDIR    = $(binutils_SUBDIR)
 $(PKG)_FILE      = $(binutils_FILE)
 $(PKG)_URL       = $(binutils_URL)
 $(PKG)_URL_2     = $(binutils_URL_2)
-$(PKG)_DEPS     := gcc
+$(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
     echo $(binutils_VERSION)
@@ -24,8 +24,7 @@ define $(PKG)_BUILD
             --prefix='$(PREFIX)/$(TARGET)' \
             --program-prefix='$(TARGET)-' \
             --host='$(TARGET)',\
-    $(subst install, install-strip,\
-    $(binutils_BUILD)))
+    $(binutils_BUILD))
 
     # install unprefixed versions also
     for p in $($(PKG)_PROGS); do \

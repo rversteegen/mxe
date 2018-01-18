@@ -1,13 +1,15 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := cegui
+$(PKG)_WEBSITE  := http://cegui.org.uk/
+$(PKG)_DESCR    := Crazy Eddie’s GUI System (CEGUI)
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 9726a2b505fb
 $(PKG)_CHECKSUM := 14b3da7f1f89693192cd9afbf2126f4519508245ed156de893828e31ce676e9e
 $(PKG)_SUBDIR   := $(PKG)-$(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$(PKG)-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://bitbucket.org/$(PKG)/$(PKG)/get/$($(PKG)_VERSION).tar.bz2
-$(PKG)_DEPS     := gcc expat freeglut freeimage freetype fribidi glew \
+$(PKG)_DEPS     := cc expat freeglut freeimage freetype fribidi glew \
                    glfw3 glm libxml2 minizip pcre xerces
 
 define $(PKG)_UPDATE

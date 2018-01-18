@@ -1,13 +1,15 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := coda
+$(PKG)_WEBSITE  := https://stcorp.nl/coda/
+$(PKG)_DESCR    := CODA
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.15.1
 $(PKG)_CHECKSUM := 51076ff958ec15633d741ea021761fc6d8c6492f931175c489288481e37ac810
 $(PKG)_SUBDIR   := coda-$($(PKG)_VERSION)
 $(PKG)_FILE     := coda-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://github.com/stcorp/coda/releases/download/$($(PKG)_VERSION)/$($(PKG)_FILE)
-$(PKG)_DEPS     := gcc
+$(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
     echo 'TODO: write update script for $(PKG).' >&2;

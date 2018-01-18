@@ -1,6 +1,8 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := ocaml-lablgl
+$(PKG)_WEBSITE  := http://wwwfun.kurims.kyoto-u.ac.jp/soft/lsl/lablgl.html
+$(PKG)_DESCR    := lablgl
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.05
 $(PKG)_CHECKSUM := d8ff03e35b970d2b23a942f9e6ed65da5a6c123986bd0ecf5424a6205af34b61
@@ -8,7 +10,7 @@ $(PKG)_SUBDIR   := lablgl-$($(PKG)_VERSION)
 $(PKG)_FILE     := lablgl-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/dist/$($(PKG)_FILE)
 $(PKG)_URL_2    := https://forge.ocamlcore.org/frs/download.php/1254/$($(PKG)_FILE)
-$(PKG)_DEPS     := gcc gtkglarea ocaml-findlib
+$(PKG)_DEPS     := cc gtkglarea ocaml-findlib
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'http://wwwfun.kurims.kyoto-u.ac.jp/soft/lsl/lablgl.html' | \

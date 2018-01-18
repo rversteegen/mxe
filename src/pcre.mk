@@ -1,17 +1,19 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := pcre
+$(PKG)_WEBSITE  := https://www.pcre.org/
+$(PKG)_DESCR    := PCRE
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 8.39
-$(PKG)_CHECKSUM := b858099f82483031ee02092711689e7245586ada49e534a06e678b8ea9549e8b
+$(PKG)_VERSION  := 8.41
+$(PKG)_CHECKSUM := e62c7eac5ae7c0e7286db61ff82912e1c0b7a0c13706616e94a7dd729321b530
 $(PKG)_SUBDIR   := pcre-$($(PKG)_VERSION)
 $(PKG)_FILE     := pcre-$($(PKG)_VERSION).tar.bz2
-$(PKG)_URL      := http://$(SOURCEFORGE_MIRROR)/project/pcre/pcre/$($(PKG)_VERSION)/$($(PKG)_FILE)
-$(PKG)_URL_2    := ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/$($(PKG)_FILE)
-$(PKG)_DEPS     := gcc
+$(PKG)_URL      := https://ftp.pcre.org/pub/pcre/$($(PKG)_FILE)
+$(PKG)_URL_2    := https://$(SOURCEFORGE_MIRROR)/project/pcre/pcre/$($(PKG)_VERSION)/$($(PKG)_FILE)
+$(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'http://sourceforge.net/projects/pcre/files/pcre/' | \
+    $(WGET) -q -O- 'https://ftp.pcre.org/pub/pcre/' | \
     $(SED) -n 's,.*/\([0-9][^"]*\)/".*,\1,p' | \
     head -1
 endef

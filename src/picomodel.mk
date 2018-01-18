@@ -1,13 +1,14 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := picomodel
+$(PKG)_WEBSITE  := https://code.google.com/p/picomodel/
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1142ad8
 $(PKG)_CHECKSUM := e9dd8b78278a454602a81eb388603142a15f2124f549f478d4edc93149eb6dd0
 $(PKG)_SUBDIR   := ufoai-$(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://github.com/ufoai/$(PKG)/tarball/$($(PKG)_VERSION)/$($(PKG)_FILE)
-$(PKG)_DEPS     := gcc
+$(PKG)_DEPS     := cc
 
 $(PKG)_UPDATE    = $(call MXE_GET_GITHUB_SHA, ufoai/picomodel, master)
 

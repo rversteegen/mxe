@@ -1,13 +1,15 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := fltk
+$(PKG)_WEBSITE  := http://www.fltk.org/
+$(PKG)_DESCR    := FLTK
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.3.3
 $(PKG)_CHECKSUM := f8398d98d7221d40e77bc7b19e761adaf2f1ef8bb0c30eceb7beb4f2273d0d97
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $($(PKG)_SUBDIR)-source.tar.gz
 $(PKG)_URL      := http://fltk.org/pub/fltk/$($(PKG)_VERSION)/$($(PKG)_FILE)
-$(PKG)_DEPS     := gcc jpeg libpng pthreads zlib
+$(PKG)_DEPS     := cc jpeg libpng pthreads zlib
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'http://www.fltk.org/' | \

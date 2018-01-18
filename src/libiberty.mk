@@ -1,6 +1,7 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := libiberty
+$(PKG)_WEBSITE  := https://gcc.gnu.org/onlinedocs/libiberty/
 $(PKG)_IGNORE    = $(binutils_IGNORE)
 $(PKG)_VERSION   = $(binutils_VERSION)
 $(PKG)_CHECKSUM  = $(binutils_CHECKSUM)
@@ -8,7 +9,7 @@ $(PKG)_SUBDIR    = $(binutils_SUBDIR)/libiberty
 $(PKG)_FILE      = $(binutils_FILE)
 $(PKG)_URL       = $(binutils_URL)
 $(PKG)_URL_2     = $(binutils_URL_2)
-$(PKG)_DEPS     := gcc
+$(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
     echo $(binutils_VERSION)

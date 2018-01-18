@@ -1,13 +1,15 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := coin
+$(PKG)_WEBSITE  := https://bitbucket.org/Coin3D/
+$(PKG)_DESCR    := Coin3D
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 3.1.3
 $(PKG)_CHECKSUM := 583478c581317862aa03a19f14c527c3888478a06284b9a46a0155fa5886d417
 $(PKG)_SUBDIR   := Coin-$($(PKG)_VERSION)
 $(PKG)_FILE     := Coin-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://bitbucket.org/Coin3D/coin/downloads/$($(PKG)_FILE)
-$(PKG)_DEPS     := gcc dlfcn-win32
+$(PKG)_DEPS     := cc dlfcn-win32
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://bitbucket.org/Coin3D/coin/downloads' | \

@@ -1,6 +1,7 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := file
+$(PKG)_WEBSITE  := https://www.darwinsys.com/file/
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 5.24
 $(PKG)_CHECKSUM := 802cb3de2e49e88ef97cdcb52cd507a0f25458112752e398445cea102bc750ce
@@ -9,7 +10,7 @@ $(PKG)_FILE     := file-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://distfiles.macports.org/file/$($(PKG)_FILE)
 # astron.com is down
 # $(PKG)_URL_2    := ftp://ftp.astron.com/pub/file/$($(PKG)_FILE)
-$(PKG)_DEPS     := gcc libgnurx
+$(PKG)_DEPS     := cc libgnurx
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://distfiles.macports.org/file/' | \

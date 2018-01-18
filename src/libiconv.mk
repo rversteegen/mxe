@@ -1,16 +1,20 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := libiconv
+$(PKG)_WEBSITE  := https://www.gnu.org/software/libiconv/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.14
-$(PKG)_CHECKSUM := 72b24ded17d687193c3366d0ebe7cde1e6b18f0df8c55438ac95be39e8a30613
+$(PKG)_VERSION  := 1.15
+$(PKG)_CHECKSUM := ccf536620a45458d26ba83887a983b96827001e92a13847b45e4925cc8913178
 $(PKG)_SUBDIR   := libiconv-$($(PKG)_VERSION)
 $(PKG)_FILE     := libiconv-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := http://ftp.gnu.org/pub/gnu/libiconv/$($(PKG)_FILE)
-$(PKG)_DEPS     := gcc
+$(PKG)_URL      := https://ftp.gnu.org/gnu/libiconv/$($(PKG)_FILE)
+$(PKG)_DEPS     := cc
+$(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
+
+$(PKG)_DEPS_$(BUILD) :=
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'http://www.gnu.org/software/libiconv/' | \
+    $(WGET) -q -O- 'https://www.gnu.org/software/libiconv/' | \
     grep 'libiconv-' | \
     $(SED) -n 's,.*libiconv-\([0-9][^>]*\)\.tar.*,\1,p' | \
     head -1
@@ -31,9 +35,9 @@ define $(PKG)_BUILD
 endef
 
 define $(PKG)_BUILD_$(BUILD)
-    mkdir '$(1).build'
-    cd    '$(1).build' && '$(1)/configure' \
-        --prefix='$(PREFIX)/$(TARGET)'
-    $(MAKE) -C '$(1).build' -j '$(JOBS)' man1_MANS=
-    $(MAKE) -C '$(1).build' -j 1 install man1_MANS=
+    # build and install the library
+    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
+        $(MXE_CONFIGURE_OPTS)
+    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_DOCS)
+    $(MAKE) -C '$(BUILD_DIR)' -j 1 install $(MXE_DISABLE_DOCS)
 endef

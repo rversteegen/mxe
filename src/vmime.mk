@@ -1,15 +1,13 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := vmime
+$(PKG)_WEBSITE  := https://www.vmime.org/
+$(PKG)_DESCR    := VMime
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 265baf1
-$(PKG)_CHECKSUM := 2278d199b24f9f1ef71c4f698063a36d40c47da4b817e8ea7f100f0a2ef6e1a7
-$(PKG)_SUBDIR   := kisli-vmime-$($(PKG)_VERSION)
-$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := https://github.com/kisli/vmime/tarball/$($(PKG)_VERSION)/$($(PKG)_FILE)
-$(PKG)_DEPS     := gcc gnutls libiconv libgsasl pthreads zlib
-
-$(PKG)_UPDATE    = $(call MXE_GET_GITHUB_SHA, kisli/vmime, master) | $(SED) 's/^\(.......\).*/\1/;'
+$(PKG)_VERSION  := 680057b
+$(PKG)_CHECKSUM := 9612e121f59db8aea3414583a050494a58cecc5dc754b114044d013170cf38a3
+$(PKG)_GH_CONF  := kisli/vmime/master
+$(PKG)_DEPS     := cc gnutls libgsasl libiconv pthreads zlib
 
 define $(PKG)_BUILD
     # The following hint is probably needed for ICU:

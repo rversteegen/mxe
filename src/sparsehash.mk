@@ -1,13 +1,14 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := sparsehash
+$(PKG)_WEBSITE  := https://github.com/sparsehash/sparsehash
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 2.0.3
 $(PKG)_CHECKSUM := 05e986a5c7327796dad742182b2d10805a8d4f511ad090da0490f146c1ff7a8c
 $(PKG)_SUBDIR   := $(PKG)-$(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://github.com/$(PKG)/$(PKG)/archive/$($(PKG)_FILE)
-$(PKG)_DEPS     := gcc
+$(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
     $(call MXE_GET_GITHUB_TAGS, sparsehash/sparsehash, sparsehash-)

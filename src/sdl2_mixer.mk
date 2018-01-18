@@ -1,16 +1,18 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := sdl2_mixer
+$(PKG)_WEBSITE  := https://www.libsdl.org/
+$(PKG)_DESCR    := SDL2_mixer
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.0.0
-$(PKG)_CHECKSUM := a8ce0e161793791adeff258ca6214267fdd41b3c073d2581cd5265c8646f725b
+$(PKG)_VERSION  := 2.0.2
+$(PKG)_CHECKSUM := 4e615e27efca4f439df9af6aa2c6de84150d17cbfd12174b54868c12f19c83bb
 $(PKG)_SUBDIR   := SDL2_mixer-$($(PKG)_VERSION)
 $(PKG)_FILE     := SDL2_mixer-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := http://www.libsdl.org/projects/SDL_mixer/release/$($(PKG)_FILE)
-$(PKG)_DEPS     := gcc libmodplug ogg sdl2 smpeg2 vorbis
+$(PKG)_URL      := https://www.libsdl.org/projects/SDL_mixer/release/$($(PKG)_FILE)
+$(PKG)_DEPS     := cc libmodplug mpg123 ogg sdl2 smpeg2 vorbis
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'http://hg.libsdl.org/SDL_mixer/tags' | \
+    $(WGET) -q -O- 'https://hg.libsdl.org/SDL_mixer/tags' | \
     $(SED) -n 's,.*release-\([0-9][^<]*\).*,\1,p' | \
     head -1
 endef
@@ -19,7 +21,7 @@ define $(PKG)_BUILD
     $(SED) -i 's,^\(Requires:.*\),\1 vorbisfile,' '$(1)/SDL2_mixer.pc.in'
     echo \
         'Libs.private:' \
-        "`$(TARGET)-pkg-config libmodplug --libs`" \
+        "`$(TARGET)-pkg-config libmodplug libmpg123 --libs`" \
         "`$(PREFIX)/$(TARGET)/bin/smpeg2-config --libs`" \
         >> '$(1)/SDL2_mixer.pc.in'
     $(SED) -i 's,for path in /usr/local; do,for path in; do,' '$(1)/configure'

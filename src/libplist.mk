@@ -1,13 +1,14 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := libplist
+$(PKG)_WEBSITE  := https://github.com/libimobiledevice/libplist
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.12
 $(PKG)_CHECKSUM := b8e860ef2e01154e79242438252b2a7ed185df351f02c167147a8a602a0aa63e
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://github.com/libimobiledevice/libplist/archive/$($(PKG)_VERSION).tar.gz
-$(PKG)_DEPS     := gcc libxml2
+$(PKG)_DEPS     := cc libxml2
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://github.com/libimobiledevice/libplist/archive/' | \

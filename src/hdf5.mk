@@ -1,16 +1,18 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := hdf5
+$(PKG)_WEBSITE  := https://www.hdfgroup.org/hdf5/
+$(PKG)_DESCR    := HDF5
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.8.12
 $(PKG)_CHECKSUM := 6d080f913a226a3ce390a11d9b571b2d5866581a2aa4434c398cd371c7063639
 $(PKG)_SUBDIR   := hdf5-$($(PKG)_VERSION)
 $(PKG)_FILE     := hdf5-$($(PKG)_VERSION).tar.bz2
-$(PKG)_URL      := https://support.hdfgroup.org/ftp/HDF5/prev-releases/hdf5-$($(PKG)_VERSION)/src/$($(PKG)_FILE)
-$(PKG)_DEPS     := gcc pthreads zlib
+$(PKG)_URL      := https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-$(call SHORT_PKG_VERSION,$(PKG))/hdf5-$($(PKG)_VERSION)/src/$($(PKG)_FILE)
+$(PKG)_DEPS     := cc pthreads zlib
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'http://www.hdfgroup.org/ftp/HDF5/current/src/' | \
+    $(WGET) -q -O- 'https://www.hdfgroup.org/ftp/HDF5/current/src/' | \
     grep '<a href.*hdf5.*bz2' | \
     $(SED) -n 's,.*hdf5-\([0-9][^>]*\)\.tar.*,\1,p' | \
     head -1
@@ -63,11 +65,20 @@ define $(PKG)_BUILD
      echo 'set(HDF5_CXX_COMPILER_EXECUTABLE $(PREFIX)/bin/$(TARGET)-h5c++)'; \
      ) > '$(CMAKE_TOOLCHAIN_DIR)/$(PKG).cmake'
 
-    ## test hdf5
+    # create pkg-config file
+    $(INSTALL) -d '$(PREFIX)/$(TARGET)/lib/pkgconfig'
+    (echo 'Name: $(PKG)'; \
+     echo 'Version: $($(PKG)_VERSION)'; \
+     echo 'Description: $($(PKG)_DESCR)'; \
+     echo 'Requires: zlib'; \
+     echo 'Libs: -lhdf5_hl -lhdf5'; \
+    ) > '$(PREFIX)/$(TARGET)/lib/pkgconfig/$(PKG).pc'
+
+    # compile test
     '$(TARGET)-g++' \
         -W -Wall -Werror -ansi -pedantic \
         '$(PWD)/src/$(PKG)-test.cpp' -o '$(PREFIX)/$(TARGET)/bin/test-hdf5.exe' \
-        -lhdf5_hl -lhdf5 -lz
+        `'$(TARGET)-pkg-config' $(PKG) --cflags --libs`
 
     # test cmake can find hdf5
     mkdir '$(1).test-cmake'

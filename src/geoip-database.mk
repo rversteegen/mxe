@@ -1,13 +1,15 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := geoip-database
+$(PKG)_WEBSITE  := https://www.maxmind.com/
+$(PKG)_DESCR    := GeoIP Legacy Database
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 20150317-1
 $(PKG)_CHECKSUM := 45be84939fd22bef1ccaa1189f83c667fef275a16bbfb91f82b7b2068b4e3735
 $(PKG)_SUBDIR   := .
 $(PKG)_FILE     := $(PKG)_$($(PKG)_VERSION)_all.deb
 $(PKG)_URL      := http://http.debian.net/debian/pool/main/g/$(PKG)/$($(PKG)_FILE)
-$(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
+$(PKG)_TARGETS  := $(BUILD)
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://packages.debian.org/jessie/all/geoip-database/download' | \

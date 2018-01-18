@@ -1,13 +1,15 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := qtscxml
+$(PKG)_WEBSITE  := https://www.qt.io/
+$(PKG)_DESCR    := Qt
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION   = $(qtbase_VERSION)
-$(PKG)_CHECKSUM := 370b13d76c9a2ddf05336e797edf7f54d41db6063e3b921e0825dd6dd26c51f1
+$(PKG)_CHECKSUM := 4bbb19d6b169ab04aec62d09ed4324639cda13d2c25cf584c9061c5d9af65890
 $(PKG)_SUBDIR    = $(subst qtbase,qtscxml,$(qtbase_SUBDIR))
 $(PKG)_FILE      = $(subst qtbase,qtscxml,$(qtbase_FILE))
 $(PKG)_URL       = $(subst qtbase,qtscxml,$(qtbase_URL))
-$(PKG)_DEPS     := gcc qtbase qtdeclarative
+$(PKG)_DEPS     := cc qtbase qtdeclarative
 
 define $(PKG)_UPDATE
     echo $(qtbase_VERSION)

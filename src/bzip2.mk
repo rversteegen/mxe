@@ -1,13 +1,14 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := bzip2
+$(PKG)_WEBSITE  := http://www.bzip.org/
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.0.6
 $(PKG)_CHECKSUM := a2848f34fcd5d6cf47def00461fcb528a0484d8edef8208d6d2e2909dc61d9cd
 $(PKG)_SUBDIR   := bzip2-$($(PKG)_VERSION)
 $(PKG)_FILE     := bzip2-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := http://www.bzip.org/$($(PKG)_VERSION)/$($(PKG)_FILE)
-$(PKG)_DEPS     := gcc
+$(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'http://www.bzip.org/downloads.html' | \

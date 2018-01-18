@@ -1,13 +1,14 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := liblaxjson
+$(PKG)_WEBSITE  := https://github.com/andrewrk/liblaxjson
 $(PKG)_IGNORE   :=
 $(PKG)_VERSION  := 1.0.5
 $(PKG)_CHECKSUM := ffc495b5837e703b13af3f5a5790365dc3a6794f12f0fa93fb8593b162b0b762
 $(PKG)_SUBDIR   := liblaxjson-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://github.com/andrewrk/liblaxjson/archive/$($(PKG)_VERSION).tar.gz
-$(PKG)_DEPS     := gcc
+$(PKG)_DEPS     := cc
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://github.com/andrewrk/liblaxjson/releases' | \

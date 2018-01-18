@@ -1,6 +1,8 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 PKG             := ocaml-core
+$(PKG)_WEBSITE  := https://caml.inria.fr/
+$(PKG)_DESCR    := ocaml
 $(PKG)_IGNORE    = $(ocaml-native_IGNORE)
 $(PKG)_VERSION   = $(ocaml-native_VERSION)
 $(PKG)_CHECKSUM  = $(ocaml-native_CHECKSUM)
@@ -8,7 +10,7 @@ $(PKG)_SUBDIR    = $(ocaml-native_SUBDIR)
 $(PKG)_FILE      = $(ocaml-native_FILE)
 $(PKG)_URL       = $(ocaml-native_URL)
 $(PKG)_URL_2     = $(ocaml-native_URL_2)
-$(PKG)_DEPS     := gcc bfd ocaml-flexdll ocaml-native
+$(PKG)_DEPS     := cc bfd ocaml-flexdll ocaml-native
 
 define $(PKG)_UPDATE
     echo $(ocaml-native_VERSION)
@@ -39,7 +41,7 @@ define $(PKG)_BUILD
     # overwriting the binary versions which ship with the compiler with
     # ones that contain the filename-win32-dirsep patch.
     $(MAKE) -C '$(1)' -j 1 coreboot
-    # second time, otherwise Segfault in some cases (depending on the runing system?)
+    # second time, otherwise Segfault in some cases (depending on the running system?)
     $(MAKE) -C '$(1)' -j 1 coreboot
     $(MAKE) -C '$(1)' -j 1 all
     # install ocamldoc and camlp4 (non cross versions)
