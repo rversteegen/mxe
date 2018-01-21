@@ -1,0 +1,21 @@
+
+--- a/music_smpeg.c     Tue Dec 12 22:32:02 2017 -0800
++++ b/music_smpeg.c     Sat Jan 20 18:28:23 2018 +1300
+@@ -138,7 +138,7 @@
+         SDL_free(music);
+         return NULL;
+     }
+-    smpeg.SMPEG_actualSpec(mp3, &music_spec);
++    smpeg.SMPEG_actualSpec(music->mp3, &music_spec);
+ 
+     music->freesrc = freesrc;
+     return music;
+@@ -172,7 +172,7 @@
+     Uint8 *stream = (Uint8 *)data;
+     int len = bytes;
+     int left = (len - smpeg.SMPEG_playAudio(music->mp3, stream, len));
+-    if (left > 0) {
++    if (left > 0)
+         stream += (len - left);
+     return left;
+ }
