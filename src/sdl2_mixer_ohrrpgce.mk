@@ -29,8 +29,11 @@
 # and because we've been using it for a while.
 # But mpg123 is the default, and is actually maintained and faster.
 # smpeg is very bad, doesn't work at most bitrates, and is crashy.
-# libmodplug used instead of mikmod because it's much higher quality; see
+# libmodplug (OpenMPT) used instead of mikmod because it's much higher quality; see
 # https://www.slimesalad.com/forum/viewtopic.php?t=6810
+# (libmodplug was made the default starting in SDL_mixer 2.0 anyway.)
+# Also, there are some OpenMPT-specific features like randomised volume, panning, filtering
+# which certain users (Foxley) may rely upon.
 
 PKG             := sdl2_mixer_ohrrpgce
 $(PKG)_WEBSITE  := https://www.libsdl.org/projects/SDL_mixer/
