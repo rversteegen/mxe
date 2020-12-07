@@ -3,18 +3,12 @@
 PKG             := protobuf
 $(PKG)_WEBSITE  := https://github.com/google/protobuf
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 3.4.0
-$(PKG)_CHECKSUM := f6600abeee3babfa18591961a0ff21e7db6a6d9ef82418a261ec4fee44ee6d44
-$(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
-$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := https://github.com/google/$(PKG)/archive/v$($(PKG)_VERSION).tar.gz
+$(PKG)_VERSION  := 3.9.0
+$(PKG)_CHECKSUM := 2ee9dcec820352671eb83e081295ba43f7a4157181dad549024d7070d079cf65
+$(PKG)_GH_CONF  := google/protobuf/tags,v
 $(PKG)_DEPS     := cc googlemock googletest zlib $(BUILD)~$(PKG)
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 $(PKG)_DEPS_$(BUILD) := googlemock googletest libtool
-
-define $(PKG)_UPDATE
-    $(call MXE_GET_GITHUB_TAGS, google/protobuf, v)
-endef
 
 define $(PKG)_BUILD
     $(call PREPARE_PKG_SOURCE,googlemock,$(SOURCE_DIR))
@@ -34,7 +28,7 @@ define $(PKG)_BUILD
 
     $(if $(BUILD_CROSS),
         '$(TARGET)-g++' \
-            -W -Wall -Werror -ansi -pedantic \
+            -W -Wall -Werror -ansi -pedantic -std=c++14 \
             '$(TEST_FILE)' -o '$(PREFIX)/$(TARGET)/bin/test-protobuf.exe' \
             `'$(TARGET)-pkg-config' protobuf --cflags --libs`
     )

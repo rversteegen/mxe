@@ -21,6 +21,7 @@
         <li><a href="#download"         >Download</a></li>
         <li><a href="https://lists.nongnu.org/mailman/listinfo/mingw-cross-env-list">Mailing List</a></li>
         <li><a href="https://github.com/mxe/mxe/issues">Issue Tracker</a></li>
+        <li><a href="https://mxe.zulipchat.com/">Async Chat (Trial)</a></li>
     </ul>
     <ul>
         <li><a href="#requirements"     >Requirements</a></li>
@@ -41,7 +42,7 @@
 <h2 id="introduction">Introduction</h2>
 
     <p>
-    MXE (M cross environment) is a Makefile that
+    MXE (M cross environment) is a GNU Makefile that
     compiles a cross compiler and cross compiles
     many free libraries such as SDL and Qt. Thus,
     it provides a nice cross compiling environment
@@ -84,6 +85,10 @@
         whenever possible
     </li>
     <li>
+        bundles <a href="https://ccache.samba.org">ccache</a> to speed
+        up repeated builds
+    </li>
+    <li>
         integrates well with <a href="#tutorial-5a">autotools</a>,
         <a href="#tutorial-5b">cmake</a>, <a href="#tutorial-5c">qmake</a>,
         and <a href="#tutorial-5d">hand-written makefiles</a>
@@ -93,7 +98,7 @@
         and is <a href="#used-by">used by several projects</a>
     </li>
     <li>
-        has <a href="http://pkg.mxe.cc/">pre-compiled binaries</a>
+        has <a href="https://pkg.mxe.cc/">pre-compiled binaries</a>
         that <a href="https://github.com/zer0main/battleship">can be used
         in Continuous Integration systems</a>
     </li>
@@ -162,8 +167,29 @@
         are always available.
     </p>
     <p>
+        When building shared libraries, there are several approaches to
+        recursively finding DLL dependencies (alphabetical list):
+    </p>
+        <ul>
+        <li>
+            <a href="https://github.com/desertbit/gml/blob/master/cmd/gml-copy-dlls/main.go">
+            go script</a>
+        </li>
+        <li>
+            <a href="https://github.com/gsauthof/pe-util">pe-util</a>
+            packaged with
+            <a href="https://github.com/mxe/mxe/blob/master/src/pe-util.mk">mxe</a>
+        </li>
+        <li>
+            <a href="https://github.com/mxe/mxe/blob/master/tools/copydlldeps.py">python script</a>
+        </li>
+        <li>
+            <a href="https://github.com/mxe/mxe/blob/master/tools/copydlldeps.md">shell script</a>
+        </li>
+        </ul>
+    <p>
         Experimental support for GCC with posix threads was
-        added in <a href="https://github.com/mxe/mxe/pull/958">November 2015</a>.
+        added in <a href="https://github.com/mxe/mxe/pull/958">November 2015</a>. Since <a href="https://github.com/mxe/mxe/pull/2263">January 2019</a> it is used by default.
     </p>
     <p>
         Experimental support for alternate GCC Exception Handling was
@@ -317,13 +343,14 @@ exit</pre>
     Instead of building MXE packages from source, you can
     download precompiled packages. There are two options:
     tar archives and Debian packages.
-    See <a href="http://pkg.mxe.cc/">pkg.mxe.cc</a>.
+    See <a href="https://pkg.mxe.cc/">pkg.mxe.cc</a>.
     </p>
 
     <h3 id="tutorial-4">Step 4: Environment Variables</h3>
 
     <p>
-    Edit your .bashrc script in order to change $PATH:
+    Edit the appropriate config script (.bashrc, .cshrc, .profile, .zshrc, etc.)
+    for your shell in order to change $PATH:
     </p>
     <pre>export PATH=/<em>where MXE is installed</em>/usr/bin:$PATH</pre>
 
@@ -411,10 +438,10 @@ If a cross compiler is detected then cross compile mode will be used.</pre>
     <a href="https://qt-project.org/">Qt</a> application,
     all you have to do is:
     </p>
-    <pre>/where MXE is installed/usr/i686-w64-mingw32.static/qt/bin/qmake
+    <pre>/&lt;where-MXE-is-installed&gt;/usr/i686-w64-mingw32.static/qt5/bin/qmake
 make</pre>
     <p>
-    Note that Qt 4 is in the "qt" subdirectory. Qt 5 is in the "qt5" subdirectory
+    Note that Qt 5 is in the "qt5" subdirectory. Qt 4 is in the "qt" subdirectory
     and its qmake can be invoked similarly.
     </p>
     <p>
@@ -424,9 +451,7 @@ make</pre>
     <a href="https://qt-project.org/doc/qt-4.8/plugins-howto.html#static-plugins">Qt documentation about static plugins</a>.
     </p>
     <p>
-    Note the sql drivers (-qt-sql-*)
-    and the image handlers for jpeg, tiff, gif and mng
-    are built-in, <em>not</em> plugins.
+    Qt 4 only: Sql drivers (-qt-sql-*) and image handlers for jpeg, tiff, gif and mng are built-in, <em>not</em> plugins.
     </p>
 
     <h3 id="tutorial-5d">Step 5d: Cross compile your Project (Makefile)</h3>
@@ -537,13 +562,14 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
     </p>
 
     <ul class="compact-list">
-        <li><a href="#requirements-debian">Debian</a></li>
-        <li><a href="#requirements-fedora">Fedora</a></li>
+        <li><a href="#requirements-debian">Debian/Ubuntu</a></li>
+        <li><a href="#requirements-fedora">Fedora/Red Hat/CentOS</a></li>
         <li><a href="#requirements-freebsd">FreeBSD</a></li>
         <li><a href="#requirements-frugalware">Frugalware</a></li>
         <li><a href="#requirements-gentoo">Gentoo</a></li>
         <li><a href="#requirements-macos">Mac OS X</a></li>
         <li><a href="#requirements-opensuse">openSUSE</a></li>
+        <li><a href="#requirements-void">Void</a></li>
         <li><a href="#requirements-wsl">Windows Subsystem for Linux</a></li>
     </ul>
 
@@ -565,7 +591,7 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
         <td></td>
     </tr>
     <tr>
-        <td><a href="http://www.bzip.org/">Bzip2</a></td>
+        <td><a href="https://en.wikipedia.org/wiki/Bzip2">Bzip2</a></td>
         <td></td>
     </tr>
     <tr>
@@ -577,7 +603,7 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
         <td></td>
     </tr>
     <tr>
-        <td><a href="http://www.gdk-pixbuf.org/">gdk-pixbuf</a></td>
+        <td><a href="https://developer.gnome.org/gdk-pixbuf/">gdk-pixbuf</a></td>
         <td></td>
     </tr>
     <tr>
@@ -617,12 +643,12 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
         <td></td>
     </tr>
     <tr>
-        <td><a href="https://sourceware.org/libffi/">libffi</a></td>
-        <td>≥ 3.0.0</td>
-    </tr>
-    <tr>
         <td><a href="https://www.gnu.org/software/libtool/">Libtool</a></td>
         <td>≥ 2.2</td>
+    </tr>
+    <tr>
+        <td><a href="https://nongnu.org/lzip/">Lzip</a></td>
+        <td></td>
     </tr>
     <tr>
         <td><a href="https://www.openssl.org/">OpenSSL</a>-dev</td>
@@ -641,12 +667,8 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
         <td></td>
     </tr>
     <tr>
-        <td><a href="http://search.cpan.org/dist/XML-Parser/Parser.pm">Perl XML::Parser</a></td>
+        <td><a href="https://metacpan.org/pod/distribution/XML-Parser/Parser.pm">Perl XML::Parser</a></td>
         <td></td>
-    </tr>
-    <tr>
-        <td><a href="https://www.freedesktop.org/wiki/Software/pkg-config/">Pkg-config</a></td>
-        <td>≥ 0.16</td>
     </tr>
     <tr>
         <td><a href="https://www.python.org/">Python</a></td>
@@ -657,11 +679,7 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
         <td></td>
     </tr>
     <tr>
-        <td><a href="http://www.scons.org/">SCons</a></td>
-        <td>≥ 0.98</td>
-    </tr>
-    <tr>
-        <td><a href="http://www.info-zip.org/UnZip.html">UnZip</a></td>
+        <td><a href="https://infozip.sourceforge.io/UnZip.html">UnZip</a></td>
         <td></td>
     </tr>
     <tr>
@@ -682,16 +700,47 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
 
     <!-- https://www.debian.org/distrib/packages#search_packages -->
     <pre>apt-get install \
-    autoconf automake autopoint bash bison bzip2 flex gettext\
-    git g++ gperf intltool libffi-dev libgdk-pixbuf2.0-dev \
-    libtool-bin libltdl-dev libssl-dev libxml-parser-perl make \
-    openssl p7zip-full patch perl pkg-config python ruby scons \
-    sed unzip wget xz-utils</pre>
+    autoconf \
+    automake \
+    autopoint \
+    bash \
+    bison \
+    bzip2 \
+    flex \
+    g++ \
+    g++-multilib \
+    gettext \
+    git \
+    gperf \
+    intltool \
+    libc6-dev-i386 \
+    libgdk-pixbuf2.0-dev \
+    libltdl-dev \
+    libssl-dev \
+    libtool-bin \
+    libxml-parser-perl \
+    lzip \
+    make \
+    openssl \
+    p7zip-full \
+    patch \
+    perl \
+    python \
+    ruby \
+    sed \
+    unzip \
+    wget \
+    xz-utils</pre>
 
     <p>
-    On 64-bit Debian, install also:
+    On 32-bit installs,
+    <pre>
+    g++-multilib
+    libc6-dev-i386
+    </pre>
+    are not required, however there are potential issues with
+    <a href="#issue-32-bit-systems">32-bit systems</a>.
     </p>
-    <pre>apt-get install g++-multilib libc6-dev-i386</pre>
 
     <p>
     Only the <a href="https://www.debian.org/releases/stable/">latest Debian stable series</a> is supported.
@@ -699,17 +748,46 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
 
     <p>
     You can install a precompiled MXE via Debian packages.
-    See <a href="http://pkg.mxe.cc/">pkg.mxe.cc</a>.
+    See <a href="https://pkg.mxe.cc/">pkg.mxe.cc</a>.
     </p>
 
-    <h3 id="requirements-fedora">Fedora</h3>
+    <h3 id="requirements-fedora">Fedora/Red Hat/Centos</h3>
 
-    <!-- https://admin.fedoraproject.org/pkgdb/ -->
+    <p>
+    Ensure <a href="https://fedoraproject.org/wiki/EPEL">Extra Packages
+    for Enterprise Linux (EPEL)</a> is installed/available. On some
+    systems, it may be as simple as:
+    </p>
+
+    <pre>yum install epel-release</pre>
+
+    <!-- https://apps.fedoraproject.org/packages/ -->
     <pre>yum install \
-    autoconf automake bash bison bzip2 flex gcc-c++ \
-    gdk-pixbuf2-devel gettext git gperf intltool make \
-    sed libffi-devel libtool openssl-devel p7zip patch \
-    perl pkgconfig python ruby scons unzip wget xz</pre>
+    autoconf \
+    automake \
+    bash \
+    bison \
+    bzip2 \
+    flex \
+    gcc-c++ \
+    gdk-pixbuf2-devel \
+    gettext \
+    git \
+    gperf \
+    intltool \
+    libtool \
+    lzip \
+    make \
+    openssl-devel \
+    p7zip \
+    patch \
+    perl \
+    python \
+    ruby \
+    sed \
+    unzip \
+    wget \
+    xz</pre>
 
     <p>
     On 64-bit Fedora,
@@ -720,10 +798,31 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
 
     <!-- https://www.freshports.org/ -->
     <pre>pkg install \
-    automake autoconf bash bison coreutils flex \
-    gcc gdk-pixbuf2 gettext git glib gmake gperf gsed intltool libffi \
-    libtool openssl p5-XML-Parser p7zip patch perl5 \
-    pkgconf python ruby scons unzip wget</pre>
+    autoconf \
+    automake \
+    bash \
+    bison \
+    coreutils \
+    flex \
+    gcc \
+    gdk-pixbuf2 \
+    gettext \
+    git \
+    glib \
+    gmake \
+    gperf \
+    gsed \
+    intltool \
+    libtool \
+    openssl \
+    p5-XML-Parser \
+    p7zip \
+    patch \
+    perl5 \
+    python \
+    ruby \
+    unzip \
+    wget</pre>
 
     <p>
     Use gmake instead of make.
@@ -770,10 +869,32 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
 
     <!-- https://www.frugalware.org/packages -->
     <pre>pacman-g2 -S \
-    autoconf automake bash bzip2 bison flex gcc gdk-pixbuf2\
-    gettext git gperf intltool make sed libffi libtool \
-    openssl patch perl perl-xml-parser pkgconfig python \
-    ruby scons unzip wget xz xz-lzma</pre>
+    autoconf \
+    automake \
+    bash \
+    bison \
+    bzip2 \
+    flex \
+    gcc \
+    gdk-pixbuf2\
+    gettext \
+    git \
+    gperf \
+    intltool \
+    libtool \
+    lzip \
+    make \
+    openssl \
+    patch \
+    perl \
+    perl-xml-parser \
+    python \
+    ruby \
+    sed \
+    unzip \
+    wget \
+    xz \
+    xz-lzma</pre>
 
     <p>
     On 64-bit Frugalware,
@@ -784,16 +905,32 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
 
     <!-- https://packages.gentoo.org/ -->
     <pre>emerge \
-    sys-devel/autoconf sys-devel/automake app-shells/bash \
-    sys-devel/bison app-arch/bzip2 \
-    sys-devel/flex sys-devel/gcc sys-devel/gettext \
-    dev-vcs/git dev-util/gperf dev-util/intltool \
-    sys-devel/make sys-apps/sed dev-libs/libffi \
-    sys-devel/libtool dev-libs/openssl app-arch/p7zip \
-    sys-devel/patch dev-lang/perl dev-perl/XML-Parser \
-    dev-util/pkgconfig dev-lang/python dev-lang/ruby \
-    dev-util/scons app-arch/unzip net-misc/wget \
-    app-arch/xz-utils x11-libs/gdk-pixbuf</pre>
+    app-arch/bzip2 \
+    app-arch/lzip \
+    app-arch/p7zip \
+    app-arch/unzip \
+    app-arch/xz-utils \
+    app-shells/bash \
+    dev-lang/perl \
+    dev-lang/python \
+    dev-lang/ruby \
+    dev-libs/openssl \
+    dev-perl/XML-Parser \
+    dev-util/gperf \
+    dev-util/intltool \
+    dev-vcs/git \
+    net-misc/wget \
+    sys-apps/sed \
+    sys-devel/autoconf \
+    sys-devel/automake \
+    sys-devel/bison \
+    sys-devel/flex \
+    sys-devel/gcc \
+    sys-devel/gettext \
+    sys-devel/libtool \
+    sys-devel/make \
+    sys-devel/patch \
+    x11-libs/gdk-pixbuf</pre>
 
     <h3 id="requirements-macos">Mac OS X</h3>
 
@@ -801,46 +938,55 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
     Install
     <a href="https://developer.apple.com/xcode/">the latest Xcode</a>
     </p>
-    <h5 id="requirements-macos-method-1">Method 1 - MacPorts</h5>
+    <h5 id="requirements-macos-macports">MacPorts</h5>
     <p>
     Install <a href="https://www.macports.org/">MacPorts</a>,
     then run:
     </p>
     <!-- https://www.macports.org/ports.php -->
-    <pre>sudo port install \
-    autoconf automake bison coreutils flex gettext \
-    gdk-pixbuf2 gnutar gsed intltool libffi libtool \
-    openssl p5-xml-parser p7zip pkgconfig scons wget xz</pre>
+    <pre>sudo port -N install \
+    coreutils \
+    gdk-pixbuf2 \
+    gnutar \
+    gsed \
+    intltool \
+    lzip \
+    p7zip \
+    wget \
+    xz</pre>
 
-    <h5 id="requirements-macos-method-2">Method 2 - Rudix</h5>
+    <h5 id="requirements-macos-rudix">Rudix</h5>
     <p>
-    Install <a href="http://rudix.org/">Rudix</a>,
-    then run:
-    </p>
-    <!-- http://rudix.org/packages/index.html -->
-    <pre>sudo rudix install \
-    autoconf automake coreutils gettext glib intltool \
-    libtool p7zip scons sed tar wget xz</pre>
-    <p>
-    Note: <b>gdk-pixbuf2</b> is not installed in method 2,
-    so you can not build <b>gtk3</b>. Other packages may be
-    missing on Rudix - please open an issue if you find any.
+    <a href="https://rudix.org/">Rudix</a> has
+    <a href="https://twitter.com/__rudix__/status/1022273255942565893">shut down since August 2018</a>
     </p>
 
-    <h5 id="requirements-macos-method-3">Method 3 - Homebrew</h5>
+    <h5 id="requirements-macos-homebrew">Homebrew</h5>
     <p>
     Install <a href="https://brew.sh/">Homebrew</a>,
     then run:
     </p>
-    <!-- http://braumeister.org/ -->
+    <!-- https://formulae.brew.sh/ -->
+    <!-- wget -q -O- https://formulae.brew.sh/api/formula.json | tr ',' '\n' | grep 'name\|desc' | grep -i {pkg} -->
     <pre>brew install \
-    autoconf automake coreutils gdk-pixbuf gettext \
-    gnu-sed gnu-tar intltool libtool p7zip wget xz</pre>
+    autoconf \
+    automake \
+    coreutils \
+    gdk-pixbuf \
+    gnu-sed \
+    gnu-tar \
+    intltool \
+    libtool \
+    lzip \
+    p7zip \
+    wget \
+    xz</pre>
     <p>
-    Some formulae are
-    <a href="https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/FAQ.md#what-does-keg-only-mean"><code>keg-only</code></a>
-    and will need <code>brew link</code> to be found.
-    </p>
+    You will see messages about
+    <a href="https://github.com/Homebrew/brew/blob/master/docs/FAQ.md#what-does-keg-only-mean"><code>keg-only</code></a>
+    formulae and tools prefixed with 'g' - you can safely ignore these
+    and no homebrew related <code>$PATH</code> modifications or
+    <code>brew link</code>s are necessary.
 
     <h5 id="requirements-macos-general">Genral Notes</h5>
     <p>
@@ -858,22 +1004,93 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
 
     <h3 id="requirements-opensuse">openSUSE</h3>
 
-    <!-- https://software.opensuse.org/131/en -->
+    <!-- https://software.opensuse.org/explore -->
     <pre>zypper install -R \
-    autoconf automake bash bison bzip2 flex gcc-c++ \
-    gdk-pixbuf-devel gettext-tools git gperf intltool \
-    libffi-devel libtool make openssl libopenssl-devel \
-    p7zip patch perl perl-XML-Parser pkg-config python \
-    ruby scons sed unzip wget xz</pre>
+    autoconf \
+    automake \
+    bash \
+    bison \
+    bzip2 \
+    flex \
+    gcc-32bit \
+    gcc-c++ \
+    gdk-pixbuf-devel \
+    gettext-tools \
+    git \
+    glibc-devel-32bit \
+    gperf \
+    intltool \
+    libgcc46-32bit \
+    libgomp46-32bit \
+    libopenssl-devel \
+    libstdc++46-devel-32bit \
+    libtool \
+    lzip \
+    make \
+    openssl \
+    p7zip \
+    patch \
+    perl \
+    perl-XML-Parser \
+    python \
+    ruby \
+    sed \
+    unzip \
+    wget \
+    xz</pre>
 
     <p>
-    On 64-bit openSUSE, install also:
+    On 32-bit installs,
+    <pre>
+    gcc-32bit
+    glibc-devel-32bit
+    libgcc46-32bit
+    libgomp46-32bit
+    libstdc++46-devel-32bit
+    </pre>
+    are not required, however there are potential issues with
+    <a href="#issue-32-bit-systems">32-bit systems</a>.
     </p>
-    <pre>zypper install -R \
-    gcc-32bit glibc-devel-32bit libgcc46-32bit \
-    libgomp46-32bit libstdc++46-devel-32bit</pre>
+
+    <h3 id="requirements-void">Void</h3>
+
+    <!-- https://voidlinux.org/packages/ -->
+    <pre>xbps-install -S \
+    autoconf \
+    automake \
+    flex \
+    gcc \
+    gdk-pixbuf-devel \
+    gettext \
+    gettext-devel \
+    git \
+    gperf \
+    intltool \
+    libcurl-devel \
+    libtool \
+    lzip \
+    make \
+    p7zip \
+    patch \
+    perl-XML-Parser \
+    python \
+    ruby \
+    unzip \
+    wget \
+    xz</pre>
 
     <h3 id="requirements-wsl">Windows Subsystem for Linux</h3>
+
+    <p>
+    <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">
+    Install the Windows Subsystem for Linux</a>, noting that WSL1
+    does not support 32-bit code execution.
+    </p>
+
+    <p>If mixing WSL1 and WSL2,
+    <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10#set-your-distribution-version-to-wsl-1-or-wsl-2">
+    ensure the distro-specific or global defaults are set.</a>
+    </p>
 
     <p>
     Requirements should match the Debian, Fedora, openSUSE etc. sections
@@ -896,6 +1113,11 @@ USE_OSGPLUGIN(&lt;plugin2&gt;)
     <li><a href="https://blogs.msdn.microsoft.com/commandline/2016/11/17/do-not-change-linux-files-using-windows-apps-and-tools/">
     MSDN Blog</a></li>
     </ul>
+
+    <h3 id="issue-32-bit-systems">Issues with 32-bit systems</h3>
+    32-bit systems
+    <a href="https://github.com/mxe/mxe/issues/1381#issuecomment-225459494">
+    may have insufficient virtual memory</a> to build all of MXE.
 
     <h3 id="issue-non-multilib">Issues without a 32-bit compiler</h3>
 
@@ -994,6 +1216,13 @@ local-pkg-list: $(LOCAL_PKG_LIST)</pre>
         (short option "-j 4 -k")
         </dd>
 
+    <dt>make foo bar MXE_USE_CCACHE=</dt>
+
+        <dd>
+        disables use of <a href="https://ccache.samba.org">ccache</a>
+        to eliminate potential error sources when debugging
+        </dd>
+
     <dt>make EXCLUDE_PKGS='foo bar'</dt>
 
         <dd>
@@ -1078,21 +1307,28 @@ local-pkg-list: $(LOCAL_PKG_LIST)</pre>
 
         <dd>
         print a list of upstream dependencies
-        and downstream dependents
+        and all downstream dependents (direct and recursive)
         </dd>
 
     <dt>make show-downstream-deps-foo</dt>
 
         <dd>
-        print a list of downstream dependents
-        suitable for usage in shell scripts
+        print a list of all recursive downstream dependents
+        - suitable for use in shell scripts
+        </dd>
+
+    <dt>make show-direct-downstream-deps-foo</dt>
+
+        <dd>
+        print a list of direct downstream dependents
+        - suitable for use in shell scripts
         </dd>
 
     <dt>make show-upstream-deps-foo</dt>
 
         <dd>
         print a list of upstream dependencies
-        suitable for usage in shell scripts
+        - suitable for use in shell scripts
         </dd>
 
     <dt>make docs/build-matrix.html</dt>
@@ -1222,7 +1458,7 @@ local-pkg-list: $(LOCAL_PKG_LIST)</pre>
         The package should be a
         <a href="https://www.gnu.org/philosophy/free-sw.html">free</a>
         <a href="https://www.debian.org/social_contract#guidelines">software</a>
-        <a href="http://www.opensource.org/osd.html">library</a>
+        <a href="https://www.opensource.org/osd.html">library</a>
         that is really used by one of your applications. Please also review our
         <a href="#legal">legal notes</a>.
         </p>
@@ -1284,14 +1520,18 @@ local-pkg-list: $(LOCAL_PKG_LIST)</pre>
         <p>
         To track branches, set:
         </p>
-        <pre>$(PKG)_GH_CONF  := owner/repo/branch</pre>
+        <pre>$(PKG)_GH_CONF  := owner/repo/branches/&lt;branch name&gt;</pre>
         <p>
         See the following packages for examples:
         </p>
         <ul>
             <li>
             <a href="https://github.com/mxe/mxe/blob/master/src/gc.mk">gc.mk</a>
-            for release tracking
+            for release tracking with non-standard file name
+            </li>
+            <li>
+            <a href="https://github.com/mxe/mxe/blob/master/src/yaml-cpp.mk">yaml-cpp.mk</a>
+            for release tracking with standard file name
             </li>
             <li>
             <a href="https://github.com/mxe/mxe/blob/master/src/vmime.mk">vmime.mk</a>
@@ -1631,7 +1871,7 @@ endef</pre>
 </div>
 
 <div class="section">
-<h2 id="copyright">Copyright © <span class="years">2007–2015</span></h2>
+<h2 id="copyright">Copyright © <span class="years">2007–2019</span></h2>
 
     <ul id="authors-list" class="compact-list">
     <li>Volker Diels-Grabsch</li>
@@ -1753,7 +1993,7 @@ endef</pre>
 
     <p>
     Packages that are
-    <a href="http://www.audiocoding.com/faac.html">non-free</a>
+    <a href="https://www.audiocoding.com/faac.html">non-free</a>
     or
     <a href="http://glaros.dtc.umn.edu/gkhome/metis/metis/faq#distribute">ambiguous</a>
     will be
@@ -1768,7 +2008,7 @@ endef</pre>
     <ul>
     <li><a href="https://www.gnu.org/philosophy/free-sw.html">The Free Software Definition</a></li>
     <li><a href="https://www.debian.org/social_contract#guidelines">The Debian Free Software Guidelines (DFSG)</a></li>
-    <li><a href="http://www.opensource.org/osd.html">The Open Source Definition</a></li>
+    <li><a href="https://www.opensource.org/osd.html">The Open Source Definition</a></li>
     </ul>
 
     <p>
@@ -1837,7 +2077,15 @@ endef</pre>
     <a href="https://www.openssl.org/docs/faq.html#LEGAL2">OpenSSL project</a>.
     </p>
     <p>
-    A similar situation also exists for package fdk-aac.
+    Since August 2015, there is an
+    <a href="https://www.openssl.org/blog/blog/categories/license/">
+    ongoing effort to re-license to Apache v2</a>.
+    </p>
+
+    <h4>FDK AAC and GPL</h4>
+    <p>
+    The <a href="https://github.com/mstorsjo/fdk-aac/blob/master/NOTICE">FDK license</a>
+    has a "no charging fees" clause that likely violates the GPL.
     </p>
 </div>
 
@@ -2681,13 +2929,13 @@ endef</pre>
 
     <ul class="compact-list">
     <li>
-        <a href="http://mxe.cc">Website</a>
+        <a href="https://mxe.cc/">Website</a>
     </li>
     <li>
         <a href="https://github.com/mxe/mxe">Project on GitHub</a>
     </li>
     <li>
-        <a href="http://pkg.mxe.cc/">Binary distribution of packages</a>
+        <a href="https://pkg.mxe.cc/">Binary distribution of packages</a>
     </li>
     <li>
         <a href="https://www.openhub.net/p/mxe">Entry on Open Hub</a>
@@ -2705,7 +2953,7 @@ endef</pre>
 
     <ul>
     <li>
-        <a href="http://www.valdyas.org/fading/index.cgi/hacking/krita/mxe_krita.html">Cross-compiling Krita using MXE</a>
+        <a href="https://valdyas.org/fading/hacking/cross-compiling-krita-using-mxe/">Cross-compiling Krita using MXE</a>
         <br>
         Experience report of the
         <a href="https://krita.org/">Krita project</a>
@@ -2716,7 +2964,7 @@ endef</pre>
         Appeared on
         <a href="http://lxer.com/module/newswire/view/118868">LXer</a>
         and
-        <a href="http://www.linuxtoday.com/developer/2009041501335RVSWDV">Linux Today</a>
+        <a href="https://www.linuxtoday.com/developer/2009041501335RVSWDV">Linux Today</a>
     </li>
     <li>
         <a href="http://www.mingw.org/wiki/LinuxCrossMinGW">MinGW cross compiler for Linux build environment</a>
@@ -2761,7 +3009,7 @@ endef</pre>
         Win32 ports of many free software packages
     </li>
     <li>
-        <a href="http://www.sandroid.org/imcross/">IMCROSS</a>
+        <a href="https://www.sandroid.org/imcross/">IMCROSS</a>
         <br>
         Another project with similar goal
     </li>
@@ -2807,34 +3055,46 @@ endef</pre>
         <a href="https://biosig.sourceforge.io/">BioSig</a>
     </li>
     <li>
-        <a href="http://en.cataclysmdda.com/">Cataclysm: Dark Days Ahead</a>
+        <a href="https://cataclysmdda.org/">Cataclysm: Dark Days Ahead</a>
     </li>
     <li>
         <a href="https://cvtool.sourceforge.io/">cvtool</a>
     </li>
     <li>
-        <a href="http://www.qtrac.eu/diffpdf.html">DiffPDF</a>
+        <a href="https://www.qtrac.eu/diffpdf.html">DiffPDF</a>
     </li>
     <li>
         <a href="https://www.digikam.org/">digiKam</a>
     </li>
     <li>
+        <a href="https://domino-chain.gitlab.io/">Domino-Chain</a>
+    </li>
+    <li>
+        <a href="https://github.com/juzzlin/DustRacing2D">Dust Racing 2D</a>
+    </li>
+    <li>
         <a href="https://github.com/eiskaltdcpp/eiskaltdcpp">EiskaltDC++</a>
     </li>
     <li>
-        <a href="http://www.ros.org/wiki/eros">Eros</a>
+        <a href="https://github.com/ThKattanek/emu64">Emu64</a>
     </li>
     <li>
-        <a href="http://www.nongnu.org/galois/">Galois</a>
+        <a href="https://www.ros.org/wiki/eros">Eros</a>
     </li>
     <li>
-        <a href="http://gcompris.net/">GCompris</a>
+        <a href="https://www.nongnu.org/galois/">Galois</a>
     </li>
     <li>
-        <a href="http://www.nongnu.org/gta/">Generic Tagged Arrays</a>
+        <a href="https://www.gcompris.net/">GCompris</a>
+    </li>
+    <li>
+        <a href="https://www.nongnu.org/gta/">Generic Tagged Arrays</a>
     </li>
     <li>
         <a href="https://www.gnu.org/software/freedink/">GNU FreeDink</a>
+    </li>
+    <li>
+        <a href="https://github.com/juzzlin/Heimer">Heimer</a>
     </li>
     <li>
         <a href="http://ifwiki.org/index.php/Hugor">Hugor</a>
@@ -2861,7 +3121,7 @@ endef</pre>
         <a href="https://msmtp.sourceforge.io/">msmtp</a>
     </li>
     <li>
-        <a href="http://www.openscad.org/">OpenSCAD</a>
+        <a href="https://www.openscad.org/">OpenSCAD</a>
     </li>
     <li>
         <a href="https://pdfgrep.org/">Pdfgrep</a>
@@ -2870,7 +3130,7 @@ endef</pre>
         <a href="https://www.pokerth.net/">PokerTH</a>
     </li>
     <li>
-        <a href="https://pushover.sourceforge.io/">Pushover</a>
+        <a href="https://psi-plus.com/">Psi+</a>
     </li>
     <li>
         <a href="https://qelectrotech.org/">QElectroTech</a>
@@ -2879,16 +3139,22 @@ endef</pre>
         <a href="https://qtads.sourceforge.io/">QTads</a>
     </li>
     <li>
+        <a href="https://github.com/scummvm/scummvm">ScummVM</a>
+    </li>
+    <li>
         <a href="https://github.com/sibuserv/sibuserv">Sibuserv</a>
     </li>
     <li>
         <a href="https://sigrok.org/">sigrok</a>
     </li>
     <li>
-        <a href="http://spek-project.org/">Spek</a>
+        <a href="http://spek.cc/">Spek</a>
     </li>
     <li>
         <a href="https://springrts.com/">Spring RTS</a>
+    </li>
+    <li>
+        <a href="https://www.strawberrymusicplayer.org/">Strawberry Music Player</a>
     </li>
     <li>
         <a href="https://subsurface-divelog.org/">Subsurface</a>
@@ -2915,13 +3181,19 @@ endef</pre>
         <a href="http://ph.on.things.free.fr/projects/ube/">Ube</a>
     </li>
     <li>
-        <a href="http://ufoai.org/">UFO: Alien Invasion</a>
+        <a href="https://ufoai.org/">UFO: Alien Invasion</a>
+    </li>
+    <li>
+        <a href="https://vcmi.eu/">VCMI Engine</a>
     </li>
     <li>
         <a href="https://violetland.github.io/">Violetland</a>
     </li>
     <li>
         <a href="https://wz2100.net/">Warzone 2100</a>
+    </li>
+    <li>
+        <a href="https://wkhtmltopdf.org/">wkhtmltopdf</a>
     </li>
     <li>
         <a href="https://sourceforge.net/projects/xfemm/">xfemm</a>

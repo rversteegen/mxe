@@ -3,18 +3,18 @@
 PKG             := libunistring
 $(PKG)_WEBSITE  := https://www.gnu.org/software/libunistring/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 0.9.7
-$(PKG)_CHECKSUM := 9ce081cbee1951b55597b30e7030bda9d7b2f034ef901a135ff3a020be5a41e5
+$(PKG)_VERSION  := 0.9.10
+$(PKG)_CHECKSUM := eb8fb2c3e4b6e2d336608377050892b54c3c983b646c561836550863003c05d7
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
-$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
+$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://ftp.gnu.org/gnu/$(PKG)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc libiconv
 
 define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://git.savannah.gnu.org/gitweb/?p=libunistring.git;a=tags' | \
-    grep '<a class="list name"' | \
-    $(SED) -n 's,.*<a[^>]*>v\([0-9][^<]*\)<.*,\1,p' | \
-    head -1
+    $(WGET) -q -O- 'https://ftp.gnu.org/gnu/libunistring/?C=M;O=D' | \
+    $(SED) -n 's,.*<a href="libunistring-\([0-9][^"]*\)\.tar.*,\1,p' | \
+    $(SORT) -V | \
+    tail -1
 endef
 
 define $(PKG)_BUILD

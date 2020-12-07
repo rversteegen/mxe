@@ -7,15 +7,14 @@
 
 #include <QApplication>
 
-#include <QtWebKitWidgets/QWebView>
-#include <QtWebKitWidgets/QWebFrame>
+#include <QtWebKitWidgets>
 
 int main(int argc, char **argv){
 
   QApplication app(argc, argv);
 
   QWebView *view = new QWebView();
-  view->load(QUrl("http://google.com/"));
+  view->load(QUrl("https://google.com/"));
   view->show();
 
   app.exec();

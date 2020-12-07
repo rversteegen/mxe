@@ -3,8 +3,8 @@
 PKG             := libiconv
 $(PKG)_WEBSITE  := https://www.gnu.org/software/libiconv/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.15
-$(PKG)_CHECKSUM := ccf536620a45458d26ba83887a983b96827001e92a13847b45e4925cc8913178
+$(PKG)_VERSION  := 1.16
+$(PKG)_CHECKSUM := e6a1b1b589654277ee790cce3734f07876ac4ccfaecbee8afa0b649cf529cc04
 $(PKG)_SUBDIR   := libiconv-$($(PKG)_VERSION)
 $(PKG)_FILE     := libiconv-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://ftp.gnu.org/gnu/libiconv/$($(PKG)_FILE)
@@ -34,10 +34,29 @@ define $(PKG)_BUILD
     rm -f '$(PREFIX)/$(TARGET)/lib/charset.alias'
 endef
 
-define $(PKG)_BUILD_$(BUILD)
+define $(PKG)_BUILD_NATIVE
     # build and install the library
     cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
         $(MXE_CONFIGURE_OPTS)
     $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_DOCS)
     $(MAKE) -C '$(BUILD_DIR)' -j 1 install $(MXE_DISABLE_DOCS)
+endef
+
+define $(PKG)_BUILD_DARWIN
+    # required for glib but causes issues with other packages
+    # (e.g. gcc) so use different prefix
+    cd '$(BUILD_DIR)' && $(SOURCE_DIR)/configure \
+        $(MXE_CONFIGURE_OPTS) \
+        --prefix='$(PREFIX)/$(TARGET).gnu'
+    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_DOCS)
+    $(MAKE) -C '$(BUILD_DIR)' -j 1 install $(MXE_DISABLE_DOCS)
+endef
+
+define $(PKG)_BUILD_$(BUILD)
+    $(if $(findstring darwin, $(BUILD)), \
+        $($(PKG)_BUILD_DARWIN), \
+        $($(PKG)_BUILD_NATIVE))
+
+    # charset.alias is redundant on mingw and modern glibc systems
+    rm -f '$(PREFIX)/$(TARGET)/lib/charset.alias'
 endef

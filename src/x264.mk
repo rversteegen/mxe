@@ -3,8 +3,8 @@
 PKG             := x264
 $(PKG)_WEBSITE  := https://www.videolan.org/developers/x264.html
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 20170626-2245
-$(PKG)_CHECKSUM := 28cf90f63964e24e65b05084c75d114a997004c8d3f72feae7229da3a098988e
+$(PKG)_VERSION  := 20180806-2245
+$(PKG)_CHECKSUM := 9f876c88aeb21fa9315e4a078931faf6fc0d3c3f47e05a306d2fdc62ea0afea2
 $(PKG)_SUBDIR   := $(PKG)-snapshot-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-snapshot-$($(PKG)_VERSION).tar.bz2
 $(PKG)_URL      := https://download.videolan.org/pub/videolan/$(PKG)/snapshots/$($(PKG)_FILE)

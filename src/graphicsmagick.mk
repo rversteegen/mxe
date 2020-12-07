@@ -4,23 +4,23 @@ PKG             := graphicsmagick
 $(PKG)_WEBSITE  := http://www.graphicsmagick.org/
 $(PKG)_DESCR    := GraphicsMagick
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.3.21
-$(PKG)_CHECKSUM := 9045304d991776b6a37e1b45b9b6ef152593ada0d49bc744263565617cbf3c1f
+$(PKG)_VERSION  := 1.3.33
+$(PKG)_CHECKSUM := ae86f749815d3039ac431caf9fc4b65acf32bfd140d1817644d3463b6ba9d51c
 $(PKG)_SUBDIR   := GraphicsMagick-$($(PKG)_VERSION)
-$(PKG)_FILE     := GraphicsMagick-$($(PKG)_VERSION).tar.xz
+$(PKG)_FILE     := GraphicsMagick-$($(PKG)_VERSION).tar.lz
 $(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/$(PKG)/$(PKG)/$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_DEPS     := cc bzip2 freetype jasper jpeg lcms libltdl libpng libxml2 pthreads tiff zlib
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://sourceforge.net/projects/graphicsmagick/files/graphicsmagick/' | \
-    $(SED) -n 's,.*/\([0-9][^"]*\)/".*,\1,p' | \
+    $(SED) -n 's,.*/projects/.*/\([0-9][^"]*\)/".*,\1,p' | \
     head -1
 endef
 
 define $(PKG)_BUILD
     # This can be removed once the patch "graphicsmagick-1-fix-xml2-config.patch" is accepted by upstream
-    cd '$(1)' && autoconf
-    cd '$(1)' && ./configure \
+    cd '$(SOURCE_DIR)' && autoconf
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
          $(MXE_CONFIGURE_OPTS) \
         --without-modules \
         --with-threads \
@@ -44,9 +44,10 @@ define $(PKG)_BUILD
         --without-x \
         ac_cv_prog_xml2_config='$(PREFIX)/$(TARGET)/bin/xml2-config' \
         ac_cv_path_xml2_config='$(PREFIX)/$(TARGET)/bin/xml2-config' \
-        LIBS='-lgomp -fopenmp'
-    $(MAKE) -C '$(1)' -j '$(JOBS)' bin_PROGRAMS=
-    $(MAKE) -C '$(1)' -j 1 install bin_PROGRAMS=
+        LIBS='-lgomp -fopenmp' \
+        $(PKG_CONFIGURE_OPTS)
+    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' bin_PROGRAMS=
+    $(MAKE) -C '$(BUILD_DIR)' -j 1 install bin_PROGRAMS=
 
     '$(TARGET)-g++' \
         -W -Wall -Werror -pedantic -std=gnu++0x \

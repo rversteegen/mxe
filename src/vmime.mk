@@ -4,9 +4,9 @@ PKG             := vmime
 $(PKG)_WEBSITE  := https://www.vmime.org/
 $(PKG)_DESCR    := VMime
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 680057b
-$(PKG)_CHECKSUM := 9612e121f59db8aea3414583a050494a58cecc5dc754b114044d013170cf38a3
-$(PKG)_GH_CONF  := kisli/vmime/master
+$(PKG)_VERSION  := 6c4bd0d
+$(PKG)_CHECKSUM := bf658ac1b5b41cbb4c720c4f46c38a59ae21946287ec18a85ad8a9a98cc65d17
+$(PKG)_GH_CONF  := kisli/vmime/branches/master
 $(PKG)_DEPS     := cc gnutls libgsasl libiconv pthreads zlib
 
 define $(PKG)_BUILD
@@ -18,7 +18,6 @@ define $(PKG)_BUILD
         -DCMAKE_RANLIB='$(PREFIX)/bin/$(TARGET)-ranlib' \
         -DVMIME_HAVE_MESSAGING_PROTO_SENDMAIL=False \
         -DVMIME_HAVE_MLANG_H=False \
-        -DCMAKE_CXX_FLAGS='-DWINVER=0x0501 -DAI_ADDRCONFIG=0x0400 -DIPV6_V6ONLY=27' \
         -DVMIME_BUILD_STATIC_LIBRARY=$(CMAKE_STATIC_BOOL) \
         -DVMIME_BUILD_SHARED_LIBRARY=$(CMAKE_SHARED_BOOL) \
         -DVMIME_BUILD_SAMPLES=OFF \
@@ -26,8 +25,6 @@ define $(PKG)_BUILD
         -DCMAKE_MODULE_PATH='$(1)/cmake' \
         -DVMIME_CHARSETCONV_LIB=iconv \
         -DVMIME_TLS_SUPPORT_LIB=gnutls \
-        -DVMIME_SHARED_PTR_USE_CXX=ON \
-        -DCXX11_COMPILER_FLAGS=ON \
         -C '$(PWD)/src/vmime-TryRunResults.cmake' \
         .
 

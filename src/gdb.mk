@@ -2,13 +2,13 @@
 
 PKG             := gdb
 $(PKG)_WEBSITE  := https://www.gnu.org/software/gdb/
-$(PKG)_VERSION  := 8.0.1
-$(PKG)_CHECKSUM := 3dbd5f93e36ba2815ad0efab030dcd0c7b211d7b353a40a53f4c02d7d56295e3
+$(PKG)_VERSION  := 10.1
+$(PKG)_CHECKSUM := f82f1eceeec14a3afa2de8d9b0d3c91d5a3820e23e0a01bbb70ef9f0276b62c0
 $(PKG)_SUBDIR   := gdb-$($(PKG)_VERSION)
 $(PKG)_FILE     := gdb-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://ftp.gnu.org/gnu/$(PKG)/$($(PKG)_FILE)
 $(PKG)_URL_2    := https://ftpmirror.gnu.org/$(PKG)/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc dlfcn-win32 expat libiconv readline zlib
+$(PKG)_DEPS     := cc dlfcn-win32 expat libiconv mman-win32 readline zlib
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://ftp.gnu.org/gnu/gdb/?C=M;O=D' | \
@@ -18,14 +18,17 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
-    cd '$(1)' && ./configure \
+    cd '$(BUILD_DIR)' && '$(SOURCE_DIR)/configure' \
         $(MXE_CONFIGURE_OPTS) \
         --with-system-readline \
-        host_configargs="LIBS=\"`$(TARGET)-pkg-config --libs dlfcn`\"" \
-        CONFIG_SHELL=$(SHELL)
-    $(MAKE) -C '$(1)' -j '$(JOBS)'
+        --disable-gdbtk \
+        --disable-tui \
+        host_configargs="LIBS=\"`$(TARGET)-pkg-config --libs dlfcn` -lmman\"" \
+        CONFIG_SHELL=$(SHELL) \
+        LDFLAGS='-Wl,--allow-multiple-definition'
+    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' MAKEINFO='/usr/bin/env true'
 
-    # executables are always static and we don't the rest
-     $(INSTALL) -m755 '$(1)/gdb/gdb.exe'                 '$(PREFIX)/$(TARGET)/bin/'
-     $(INSTALL) -m755 '$(1)/gdb/gdbserver/gdbserver.exe' '$(PREFIX)/$(TARGET)/bin/'
+    # executables are always static and we don't want the rest
+     $(INSTALL) -m755 '$(BUILD_DIR)/gdb/gdb.exe'                 '$(PREFIX)/$(TARGET)/bin/'
+     $(INSTALL) -m755 '$(BUILD_DIR)/gdbserver/gdbserver.exe' '$(PREFIX)/$(TARGET)/bin/'
 endef

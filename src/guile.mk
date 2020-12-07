@@ -13,7 +13,7 @@ $(PKG)_DEPS     := cc gc gettext gmp libffi libgnurx libiconv libltdl libunistri
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://git.savannah.gnu.org/gitweb/?p=guile.git;a=tags' | \
-    grep '<a class="list subject"' | \
+    grep '<a [^>]*class="list subject"' | \
     $(SED) -n 's,.*<a[^>]*>[^0-9>]*\([0-9][^< ]*\)\.<.*,\1,p' | \
     grep -v 2.* | \
     $(SORT) -Vr | \
@@ -24,17 +24,14 @@ define $(PKG)_BUILD
     # The setting "scm_cv_struct_timespec=no" ensures that Guile
     # won't try to use the "struct timespec" from <pthreads.h>,
     # which would fail because we tell Guile not to use Pthreads.
-    cd '$(1)' && CC_FOR_BUILD=$(BUILD_CC) ./configure \
-        --host='$(TARGET)' \
-        --build="`config.guess`" \
-        --prefix='$(PREFIX)/$(TARGET)' \
-        --disable-shared \
+    cd '$(BUILD_DIR)' && CC_FOR_BUILD=$(BUILD_CC) $(SOURCE_DIR)/configure \
+        $(MXE_CONFIGURE_OPTS) \
         --without-threads \
         scm_cv_struct_timespec=no \
         LIBS='-lunistring -lintl -liconv -ldl' \
-        CFLAGS='-Wno-unused-but-set-variable -Wno-unused-value'
-    $(MAKE) -C '$(1)' -j '$(JOBS)' $(MXE_DISABLE_CRUFT) schemelib_DATA=
-    $(MAKE) -C '$(1)' -j 1 install $(MXE_DISABLE_CRUFT) schemelib_DATA=
+        CFLAGS='-Wno-unused-but-set-variable -Wno-unused-value $($(PKG)_EXTRA_WARNINGS)'
+    $(MAKE) -C '$(BUILD_DIR)' -j '$(JOBS)' $(MXE_DISABLE_CRUFT) schemelib_DATA=
+    $(MAKE) -C '$(BUILD_DIR)' -j 1 install $(MXE_DISABLE_CRUFT) schemelib_DATA=
 
     '$(TARGET)-gcc' \
         -W -Wall -Werror -ansi -pedantic \

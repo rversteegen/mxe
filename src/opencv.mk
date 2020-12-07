@@ -10,14 +10,16 @@ $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := opencv-$($(PKG)_VERSION).zip
 $(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/$(PKG)library/$(PKG)-unix/$($(PKG)_VERSION)/$($(PKG)_FILE)
 $(PKG)_URL_2    := https://distfiles.macports.org/opencv/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc eigen ffmpeg jasper jpeg lcms1 libpng libwebp \
+$(PKG)_DEPS     := cc eigen ffmpeg jasper jpeg libpng libwebp \
                    openblas openexr protobuf tiff xz zlib
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://sourceforge.net/projects/opencvlibrary/files/opencv-unix/' | \
-    $(SED) -n 's,.*/\([0-9][^"]*\)/".*,\1,p' | \
+    $(SED) -n 's,.*/projects/.*/\([0-9][^"]*\)/".*,\1,p' | \
     head -1
 endef
+
+# -DCMAKE_CXX_STANDARD=98 required for non-posix gcc7 build
 
 define $(PKG)_BUILD
     # build
@@ -46,6 +48,7 @@ define $(PKG)_BUILD
       -DBUILD_PNG=OFF \
       -DBUILD_OPENEXR=OFF \
       -DCMAKE_VERBOSE=ON \
+      -DCMAKE_CXX_STANDARD=11 \
       -DCMAKE_CXX_FLAGS='-D_WIN32_WINNT=0x0500'
 
     # install
