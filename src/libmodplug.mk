@@ -3,8 +3,8 @@
 PKG             := libmodplug
 $(PKG)_WEBSITE  := https://modplug-xmms.sourceforge.io/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 0.8.8.4
-$(PKG)_CHECKSUM := 5c5ee13dddbed144be26276e5f102da17ff5b1c992f3100389983082da2264f7
+$(PKG)_VERSION  := 0.8.9.0
+$(PKG)_CHECKSUM := 457ca5a6c179656d66c01505c0d95fafaead4329b9dbaa0f997d00a3508ad9de
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.gz
 $(PKG)_URL      := https://$(SOURCEFORGE_MIRROR)/project/modplug-xmms/$(PKG)/$($(PKG)_VERSION)/$($(PKG)_FILE)
@@ -19,6 +19,10 @@ endef
 define $(PKG)_BUILD
     cd '$(1)' && ./configure \
         $(MXE_CONFIGURE_OPTS)
+
+    $(if $(BUILD_STATIC),                                         \
+        $(SED) -i 's/__declspec(dllimport)//' '$(1)/src/modplug.h')
+
     $(MAKE) -C '$(1)' -j '$(JOBS)' install
 
     '$(TARGET)-gcc' \
