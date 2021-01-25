@@ -5,9 +5,9 @@ Enable loop points when using libmodplug.
 Note SDL_mixer r826 "Fixed bug 1558 - mikmod broken volume and loop support"
 enabled loop points in music_mikmod.c, but not in music_modplug.c
 
---- a/music_modplug.c   Tue Dec 12 22:32:02 2017 -0800
-+++ b/music_modplug.c   Sat Jan 20 13:53:28 2018 +1300
-@@ -146,7 +146,7 @@
+--- a/src/codecs/music_modplug.c        Mon Jan 11 05:55:02 2021 +0300
++++ b/src/codecs/music_modplug.c        Mon Jan 25 23:06:20 2021 +1300
+@@ -152,7 +152,7 @@
      settings.mBassRange = 50;
      settings.mSurroundDepth = 0;
      settings.mSurroundDelay = 10;

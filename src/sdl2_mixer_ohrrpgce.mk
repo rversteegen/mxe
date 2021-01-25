@@ -1,31 +1,15 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 # Variant on sdl2_mixer.mk
-# Unfortunately not entirely automated:
-# First ensure mxe has compiled sdl2, eg run the 'make' command given below,
-# or just delete 'sdl2' from the DEPS.
-# You need to provide SDL2.dll, to prevent mxe from statically linking it.
-# You can either compile sdl2 yourself:
-#   make MXE_TARGETS=i686-w64-mingw32.shared sdl2
-# (note the 'shared') which will compile gcc, etc, a second time, or just
-# download the SDL2 development libraries:
-#   wget https://www.libsdl.org/release/SDL2-devel-2.0.7-mingw.tar.gz
-#   tar xf SDL2-devel-2.0.7-mingw.tar.gz
-#   cp SDL2-2.0.7/i686-w64-mingw32/lib/libSDL2*  usr/i686-w64-mingw32.static/lib/
-#   cp SDL2-2.0.7/i686-w64-mingw32/bin/*  usr/i686-w64-mingw32.static/bin/
-#   sed -i -e "s|^libdir=.*$|libdir='$(pwd)/usr/i686-w64-mingw32.static/lib'|" usr/i686-w64-mingw32.static/lib/libSDL2.la
-# (usr/i686-w64-mingw32.static/lib/libSDL2.la needs to contain correct
-# dlname='../bin/SDL2.dll' and library_names='libSDL2.dll.a')
-# Compile:
-#   make MXE_TARGETS=i686-w64-mingw32.static sdl_mixer_ohrrpgce
-# Strip the resulting .dll:
-#   cp usr/i686-w64-mingw32.static/bin/SDL2_mixer.dll SDL2_mixer.dll
-#   strip SDL2_mixer.dll
-# Check that it links dynamically to SDL2.dll:
-#   objdump -x SDL2_mixer.dll | grep SDL2.dll
+
+# This script should be used by running win32/build_sdl_mixer.sh from the
+# OHRRPGCE source tree, because otherwise a lot of manual steps are required:
+# You need to provide SDL2.dll (and libSDL2.la), to prevent mxe from statically
+# linking it. See sdl_mixer_ohrrpgce.mk and build_sdl_mixer.sh
 
 # FLAC disabled because we don't use it.
-# libmad used just because it produces a smaller .dll (~750KB vs ~950KB)
+# (Timidity and Fluidsynth are disabled by default.)
+# libmad used just because it produces a smaller .dll (~780KB vs ~980KB)
 # and because we've been using it for a while.
 # But mpg123 is the default, and is actually maintained and faster.
 # smpeg is very bad, doesn't work at most bitrates, and is crashy.
@@ -39,12 +23,15 @@ PKG             := sdl2_mixer_ohrrpgce
 $(PKG)_WEBSITE  := https://www.libsdl.org/projects/SDL_mixer/
 $(PKG)_DESCR    := SDL2_mixer
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 2.0.2
-$(PKG)_CHECKSUM := 4e615e27efca4f439df9af6aa2c6de84150d17cbfd12174b54868c12f19c83bb
-$(PKG)_SUBDIR   := SDL2_mixer-$($(PKG)_VERSION)
-$(PKG)_FILE     := SDL2_mixer-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := https://www.libsdl.org/projects/SDL_mixer/release/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc libmap libmodplug ogg sdl2 vorbis # mpg123 smpeg2
+$(PKG)_VERSION  := 2.0.5
+$(PKG)_HG_REV   := b0afe341a91d
+#$(PKG)_HG_REV  := tip
+$(PKG)_CHECKSUM := bf6c627e9894a71534cf000d3658d3cc8cad32cb694974763611f25cc14d3efa
+$(PKG)_SUBDIR   := SDL_mixer-$($(PKG)_HG_REV)
+$(PKG)_FILE     := SDL2_mixer-$($(PKG)_HG_REV).tar.gz
+$(PKG)_URL      := https://hg.libsdl.org/SDL_mixer/archive/$($(PKG)_HG_REV).tar.gz
+# sdl2 omitted because we copy the sdl libs from i686-w64-mingw32.shared
+$(PKG)_DEPS     := cc libmad libmodplug ogg vorbis # mpg123 opusfile
 
 define $(PKG)_UPDATE
     $(WGET) -q -O- 'https://hg.libsdl.org/SDL_mixer/tags' | \
@@ -53,6 +40,7 @@ define $(PKG)_UPDATE
 endef
 
 define $(PKG)_BUILD
+    #$(SED) -i 's,^\(Requires:.*\),\1 opusfile vorbisfile,' '$(1)/SDL2_mixer.pc.in'
     $(SED) -i 's,^\(Requires:.*\),\1 vorbisfile,' '$(1)/SDL2_mixer.pc.in'
     echo \
         'Libs.private:' \
@@ -63,6 +51,8 @@ define $(PKG)_BUILD
         --enable-shared \
         --with-sdl-prefix='$(PREFIX)/$(TARGET)' \
         --disable-sdltest \
+        --disable-music-timidity-midi \
+        --disable-music-fluidsynth-midi \
         --enable-music-mod \
         --enable-music-mod-modplug \
         --enable-music-ogg \
@@ -70,19 +60,17 @@ define $(PKG)_BUILD
         --disable-music-flac \
         --disable-music-flac-shared \
         --enable-music-mp3 \
-        --disable-music-mp3-smpeg \
         --disable-music-mp3-mpg123 \
         --disable-music-mp3-mpg123-shared \
         --enable-music-mp3-mad-gpl \
         --enable-music-mp3-mad-gpl-dithering \
-        --disable-music-mp3-mad-gpl-shared \
-        --disable-smpegtest \
         SMPEG_CONFIG='$(PREFIX)/$(TARGET)/bin/smpeg2-config' \
         WINDRES='$(TARGET)-windres' \
-        LIBS='-lvorbis -logg' \
-	LDFLAGS='-Wl,-export-all-symbols'
+	LDFLAGS='-Wl,-export-all-symbols' \
+        LIBS="`$(TARGET)-pkg-config libmodplug libmad vorbisfile --libs-only-l`"
+        #  libmpg123 opusfile
 
-    $(MAKE) -C '$(1)' -j '$(JOBS)' install-lib install-hdrs $(MXE_DISABLE_CRUFT)
+    $(MAKE) -C '$(1)' -j '$(JOBS)' install $(MXE_DISABLE_CRUFT)
 
     '$(TARGET)-gcc' \
         -W -Wall -Werror -ansi -pedantic \
