@@ -1,55 +1,49 @@
 # This file is part of MXE. See LICENSE.md for licensing information.
 
 # Variant on sdl_mixer.mk
+# (Update to 1.2.13 from hg)
 
-# Unfortunately not entirely automated:
-# First ensure mxe has compiled sdl, eg run the 'make' command given below,
-# or just delete 'sdl' from the DEPS.
-# You need to provide SDL.dll, to prevent mxe from statically linking it.
+# This script should be used by running win32/build_sdl_mixer.sh from the
+# OHRRPGCE source tree, because otherwise a lot of manual steps are required:
+# You need to provide SDL.dll (with matching libSDL.la), to prevent mxe from
+# statically linking it, but mxe doesn't build it for the static target.
 # You can either compile sdl yourself:
 #   make MXE_TARGETS=i686-w64-mingw32.shared sdl
-# (note the 'shared') which will compile gcc, etc, a second time, or just
-# download the SDL development libraries:
-#   wget https://www.libsdl.org/release/SDL-devel-1.2.15-mingw.tar.gz
-#   tar xf SDL-devel-1.2.15-mingw.tar.gz
-#   cp SDL-1.2.15/i686-w64-mingw32/lib/libSDL*  usr/i686-w64-mingw32.static/lib/
-#   cp SDL-1.2.15/i686-w64-mingw32/bin/*  usr/i686-w64-mingw32.static/bin/
-#   sed -i -e "s|^libdir=.*$|libdir='$(pwd)/usr/i686-w64-mingw32.static/lib'|" usr/i686-w64-mingw32.static/lib/libSDL.la
-# (usr/i686-w64-mingw32.static/lib/libSDL.la needs to contain correct
-# dlname='../bin/SDL.dll' and library_names='libSDL.dll.a')
-# Compile:
-#   make MXE_TARGETS=i686-w64-mingw32.static sdl_mixer_ohrrpgce
-# Strip the resulting .dll:
-#   cp usr/i686-w64-mingw32.static/bin/SDL_mixer.dll SDL_mixer.dll
-#   strip SDL_mixer.dll
-# Check that it links dynamically to SDL.dll:
-#   objdump -x SDL_mixer.dll | grep SDL.dll
+# (note the 'shared') which will compile gcc, etc, a second time, (or just edit
+# sdl.mk) followed by
+#   cp usr/i686-w64-mingw32.shared/lib/libSDL_mixer.* usr/i686-w64-mingw32.static/lib/
+#   cp usr/i686-w64-mingw32.shared/bin/SDL_mixer.dll usr/i686-w64-mingw32.static/bin
+# or just download the SDL development libraries and then fixup libSDL.la.
+# See build_sdl_mixer.sh
 
-# FLAC disabled because we don't use it.
-# libmad used instead of smpeg because it's smaller, and
-# smpeg is very bad: doesn't work at most bitrates, and is crashy.
-# libmodplug (OpenMPT) used instead of mikmod because it's much higher quality; see
+# FLAC disabled because we don't use it, and likewise Timidity. (Fluidsynth is already
+# disabled by default.)
+# libmad used instead of mpg123 because it's smaller. (SDL_mixer 1.2.13 drops smpeg)
+# libmodplug used instead of mikmod because it's much higher quality; see
 # https://www.slimesalad.com/forum/viewtopic.php?t=6810
-# Also, there are some OpenMPT-specific features like randomised volume, panning, filtering
-# which certain users (Foxley) may rely upon.
+# Also, there are some modplug-specific features like randomised volume, panning,
+# filtering which certain users (Foxley) may rely upon.
 
 PKG             := sdl_mixer_ohrrpgce
 $(PKG)_WEBSITE  := https://www.libsdl.org/projects/SDL_mixer/
 $(PKG)_IGNORE   :=
-$(PKG)_VERSION  := 1.2.12
-$(PKG)_CHECKSUM := 1644308279a975799049e4826af2cfc787cad2abb11aa14562e402521f86992a
-$(PKG)_SUBDIR   := SDL_mixer-$($(PKG)_VERSION)
-$(PKG)_FILE     := SDL_mixer-$($(PKG)_VERSION).tar.gz
-$(PKG)_URL      := https://www.libsdl.org/projects/SDL_mixer/release/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc libmodplug ogg sdl libmad vorbis  #libmikmod smpeg
+$(PKG)_VERSION  := 1.2.13
+$(PKG)_HG_REV   := aa1005bea119
+#$(PKG)_HG_REV  := SDL-1.2
+$(PKG)_CHECKSUM := 8405225775ed08484a3ade107feb2f59557f07b7010bcf4025c8374f1d5a0a09
+$(PKG)_SUBDIR   := SDL_mixer-$($(PKG)_HG_REV)
+$(PKG)_FILE     := SDL_mixer-$($(PKG)_HG_REV).tar.gz
+$(PKG)_URL      := https://hg.libsdl.org/SDL_mixer/archive/$($(PKG)_HG_REV).tar.gz
+# sdl omitted because we copy the sdl libs from i686-w64-mingw32.shared
+$(PKG)_DEPS     := cc libmodplug ogg libmad vorbis  #libmikmod mpg123
 
-define $(PKG)_UPDATE
-    $(WGET) -q -O- 'https://hg.libsdl.org/SDL_mixer/tags' | \
-    $(SED) -n 's,.*release-\([0-9][^<]*\).*,\1,p' | \
-    grep '^1\.' | \
-    $(SORT) -V | \
-    tail -1
-endef
+# define $(PKG)_UPDATE
+#     $(WGET) -q -O- 'https://hg.libsdl.org/SDL_mixer/tags' | \
+#     $(SED) -n 's,.*release-\([0-9][^<]*\).*,\1,p' | \
+#     grep '^1\.' | \
+#     $(SORT) -V | \
+#     tail -1
+# endef
 
 define $(PKG)_BUILD
     $(SED) -i 's,^\(Requires:.*\),\1 vorbisfile,' '$(SOURCE_DIR)/SDL_mixer.pc.in'
@@ -63,6 +57,8 @@ define $(PKG)_BUILD
         --enable-shared \
         --with-sdl-prefix='$(PREFIX)/$(TARGET)' \
         --disable-sdltest \
+        --disable-music-timidity-midi \
+        --disable-music-fluidsynth-midi \
         --disable-music-mod \
         --enable-music-mod-modplug \
         --enable-music-ogg \
